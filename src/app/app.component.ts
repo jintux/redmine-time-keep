@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
 @Component({
@@ -17,7 +17,14 @@ export class AppComponent {
     username: this.username,
     password: this.password,
     passwordConfirm: this.passwordConfirm
-  });
+  }, {validator: this.passEqual });
+
+  passEqual(creds: FormGroup) {
+    if (creds.controls.password.value === creds.controls.passwordConfirm.value) {
+      return null;
+    }
+    return { passEqual: true };
+  }
 
   getErrorMsg(field: FormControl) {
     if (field.hasError('required')) {
@@ -28,6 +35,6 @@ export class AppComponent {
   constructor(private fb: FormBuilder) {
     Observable.merge(
       this.credentials.valueChanges)
-      .subscribe(v => console.log(v, this.credentials.errors, this.credentials.hasError('required')));
+      .subscribe(v => console.log(v, this.credentials.errors, this.credentials.hasError('passEqual')));
   }
 }

@@ -26,6 +26,7 @@
     <div flex>
         <mat-form-field>
           <input matInput placeholder="Confirm Password" type="password" formControlName="passwordConfirm">
+          <mat-error *ngIf="credentials.hasError('passEqual')">Confirmation password must be equal to original password</mat-error>
           <mat-error *ngIf="passwordConfirm.invalid">{{ getErrorMsg(passwordConfirm) }}</mat-error>
         </mat-form-field>
       </div>
