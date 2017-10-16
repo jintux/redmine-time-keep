@@ -4,19 +4,26 @@
         <span>Configure Redmine</span>
       </mat-toolbar>
   </div>
-  <div flex>
+  <form [formGroup]="credentials" action="none" novalidate>
+    <div flex>
+        <mat-form-field>
+          <input matInput placeholder="URL" formControlName="url">
+        </mat-form-field>
+    </div>
+    <div flex>
       <mat-form-field>
-        <input matInput placeholder="URL">
+        <input matInput placeholder="Username" formControlName="username">
       </mat-form-field>
-  </div>
-  <div flex>
-    <mat-form-field>
-      <input matInput placeholder="Username">
-    </mat-form-field>
-  </div>
-  <div flex>
-    <mat-form-field>
-      <input matInput placeholder="Password" type="password">
-    </mat-form-field>
-  </div>
+    </div>
+    <div flex>
+      <mat-form-field>
+        <input matInput placeholder="Password" type="password" formControlName="password">
+      </mat-form-field>
+    </div>
+    <div flex>
+        <mat-form-field>
+          <input matInput placeholder="Confirm Password" type="password" formControlName="passwordConfirm">
+        </mat-form-field>
+      </div>
+  </form>
 </div>
