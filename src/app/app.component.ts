@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
 @Component({
@@ -8,16 +8,26 @@ import { Observable } from 'rxjs/Rx';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  url = new FormControl('', Validators.required);
+  username = new FormControl('', Validators.required);
+  password = new FormControl('', Validators.required);
+  passwordConfirm = new FormControl('', Validators.required);
   credentials = this.fb.group({
-    url: ['', Validators.required ],
-    username: ['', Validators.required ],
-    password: ['', Validators.required ],
-    passwordConfirm: ['', Validators.required ]
+    url: this.url,
+    username: this.username,
+    password: this.password,
+    passwordConfirm: this.passwordConfirm
   });
+
+  getErrorMsg(field: FormControl) {
+    if (field.hasError('required')) {
+      return 'This field is required.';
+    }
+  }
 
   constructor(private fb: FormBuilder) {
     Observable.merge(
       this.credentials.valueChanges)
-      .subscribe(console.log);
+      .subscribe(v => console.log(v, this.credentials.errors, this.credentials.hasError('required')));
   }
 }
