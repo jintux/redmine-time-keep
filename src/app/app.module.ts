@@ -3,16 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule, MatSelectModule } from '@angular/material';
+import { MatFormFieldModule, MatSelectModule, MatInput, MatToolbarModule } from '@angular/material';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, MatInput
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatFormFieldModule, MatSelectModule
+    MatToolbarModule, MatFormFieldModule, MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

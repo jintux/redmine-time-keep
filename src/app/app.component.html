@@ -1,15 +1,22 @@
-<div class="example-container">
-  <mat-form-field>
-    <input matInput placeholder="Input">
-  </mat-form-field>
-
-  <mat-form-field>
-    <textarea matInput placeholder="Textarea"></textarea>
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-select placeholder="Select">
-      <mat-option value="option">Option</mat-option>
-    </mat-select>
-  </mat-form-field>
+<div layout="column">
+  <div flex>
+      <mat-toolbar color="primary">
+        <span>Configure Redmine</span>
+      </mat-toolbar>
+  </div>
+  <div flex>
+      <mat-form-field>
+        <input matInput placeholder="URL">
+      </mat-form-field>
+  </div>
+  <div flex>
+    <mat-form-field>
+      <input matInput placeholder="Username">
+    </mat-form-field>
+  </div>
+  <div flex>
+    <mat-form-field>
+      <input matInput placeholder="Password" type="password">
+    </mat-form-field>
+  </div>
 </div>
