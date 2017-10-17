@@ -38,5 +38,9 @@
         Continue
       </span>
     </button>
+    <span *ngIf="showError$ | async" style="vertical-align: center">
+        <mat-icon style="color: red">error</mat-icon>
+        {{ showError$ | async }}
+    </span>
   </div>
 </div>
