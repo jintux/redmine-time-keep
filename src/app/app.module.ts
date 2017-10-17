@@ -4,7 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule, MatSelectModule, MatInput, MatToolbarModule } from '@angular/material';
+import { MatFormFieldModule, MatSelectModule, MatInput,
+  MatToolbarModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { MatFormFieldModule, MatSelectModule, MatInput, MatToolbarModule } from 
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    MatToolbarModule, MatFormFieldModule, MatSelectModule
+    MatToolbarModule, MatFormFieldModule, MatSelectModule,
+    MatProgressSpinnerModule, MatIconModule, MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

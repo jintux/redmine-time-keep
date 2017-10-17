@@ -15,6 +15,11 @@ export class AppComponent {
     passwordConfirm: ['', [Validators.required, _ => this.passEqual()]]
   });
 
+  showSpinner$ = this.credentials.statusChanges
+    .map(v => v === 'INVALID');
+  showContinue$ = this.credentials.statusChanges
+    .map(v => v === 'VALID');
+
   passEqual() {
     if (!this || !this.credentials) {
       return null;
