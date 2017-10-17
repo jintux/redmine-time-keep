@@ -8,26 +8,25 @@
     <div flex>
         <mat-form-field>
           <input matInput placeholder="URL" formControlName="url">
-          <mat-error *ngIf="url.invalid">{{ getErrorMsg(url) }}</mat-error>
+          <mat-error>This field is required.</mat-error>
         </mat-form-field>
     </div>
     <div flex>
       <mat-form-field>
         <input matInput placeholder="Username" formControlName="username">
-        <mat-error *ngIf="username.invalid">{{ getErrorMsg(username) }}</mat-error>
+        <mat-error>This field is required.</mat-error>
       </mat-form-field>
     </div>
     <div flex>
       <mat-form-field>
         <input matInput placeholder="Password" type="password" formControlName="password">
-        <mat-error *ngIf="password.invalid">{{ getErrorMsg(password) }}</mat-error>
+        <mat-error>This field is required.</mat-error>
       </mat-form-field>
     </div>
     <div flex>
         <mat-form-field>
           <input matInput placeholder="Confirm Password" type="password" formControlName="passwordConfirm">
-          <mat-error *ngIf="credentials.hasError('passEqual')">Confirmation password must be equal to original password</mat-error>
-          <mat-error *ngIf="passwordConfirm.invalid">{{ getErrorMsg(passwordConfirm) }}</mat-error>
+          <mat-error>Password and confirmation password must be equal</mat-error>
         </mat-form-field>
       </div>
   </form>
