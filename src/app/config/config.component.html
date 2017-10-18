@@ -1,0 +1,46 @@
+<div layout="column">
+  <div flex>
+      <mat-toolbar color="primary">
+        <span>Configure Redmine</span>
+      </mat-toolbar>
+  </div>
+  <form [formGroup]="credentials" action="none" novalidate>
+    <div flex>
+        <mat-form-field>
+          <input matInput placeholder="URL" formControlName="url">
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+    </div>
+    <div flex>
+      <mat-form-field>
+        <input matInput placeholder="Username" formControlName="username">
+        <mat-error>This field is required.</mat-error>
+      </mat-form-field>
+    </div>
+    <div flex>
+      <mat-form-field>
+        <input matInput placeholder="Password" type="password" formControlName="password">
+        <mat-error>This field is required.</mat-error>
+      </mat-form-field>
+    </div>
+    <div flex>
+        <mat-form-field>
+          <input matInput placeholder="Confirm Password" type="password" formControlName="passwordConfirm">
+          <mat-error>Password and confirmation password must be equal</mat-error>
+        </mat-form-field>
+      </div>
+  </form>
+  <div flex style="margin-top: 2rem">
+    <mat-spinner *ngIf="showSpinner$ | async" strokeWidth="3" [diameter]="30"></mat-spinner>
+    <button *ngIf="showContinue$ | async" mat-button>
+      <span style="vertical-align: center">
+        <mat-icon style="color: green">check</mat-icon>
+        Continue
+      </span>
+    </button>
+    <span *ngIf="showError$ | async" style="vertical-align: center">
+        <mat-icon style="color: red">error</mat-icon>
+        {{ showError$ | async }}
+    </span>
+  </div>
+</div>
