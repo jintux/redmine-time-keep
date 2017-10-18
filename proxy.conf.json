@@ -1,0 +1,9 @@
+{
+    "/redmine": {
+        "target": "https://redmine.jdm1.maassluis",
+        "secure": false,
+        "pathRewrite": {
+            "^/redmine": ""
+        }
+    }
+}

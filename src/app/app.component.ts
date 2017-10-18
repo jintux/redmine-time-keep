@@ -43,7 +43,8 @@ export class AppComponent {
 
   testRedmineLogin(cred: any): Observable<string> {
     const auth = 'Basic ' + btoa(cred.username + ':' + cred.password);
-    const headers = new HttpHeaders({'Content-Type': 'application/json'})
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
       .set('authorization', auth);
     return this.http.get(cred.url + '/issues.json?limit=1', { headers })
       .mapTo('')
