@@ -16,6 +16,8 @@
           <span>Redmine</span>
         </mat-toolbar>
     </div>
-    <div flex><h1>App goes here</h1></div>
+    <mat-list>
+      <mat-list-item *ngFor="let i of issues$ | async"><h3 style="padding-right: 1rem">#{{ i.id }}</h3> {{ i.subject }}</mat-list-item>
+    </mat-list>
   </div>
 </mat-sidenav-container>

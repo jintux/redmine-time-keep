@@ -1,3 +1,4 @@
+import { RedmineService } from './redmine.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -6,7 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatSelectModule, MatInput, MatSidenavModule,
-  MatToolbarModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule } from '@angular/material';
+  MatToolbarModule, MatProgressSpinnerModule, MatIconModule,
+  MatButtonModule, MatListModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { ConfigComponent } from './config/config.component';
@@ -29,9 +31,9 @@ const routes: Routes = [
     HttpClientModule,
     MatToolbarModule, MatFormFieldModule, MatSelectModule,
     MatProgressSpinnerModule, MatIconModule, MatButtonModule,
-    MatSidenavModule
+    MatSidenavModule, MatListModule
   ],
-  providers: [],
+  providers: [RedmineService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

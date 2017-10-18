@@ -1,3 +1,4 @@
+import { RedmineService } from './../redmine.service';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
@@ -55,7 +56,7 @@ export class ConfigComponent {
         : Observable.of('' + e));
   }
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router, private redmine: RedmineService) {
     const creds = localStorage.getItem('credentials');
     if (creds) {
       try {
@@ -68,6 +69,7 @@ export class ConfigComponent {
 
   save() {
     localStorage.setItem('credentials', JSON.stringify(this.credentials.value));
+    this.redmine.setConfig(this.credentials.value);
     this.router.navigate(['/']);
   }
 }
