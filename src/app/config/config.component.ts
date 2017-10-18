@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 type HttpStatus = 0 | 1 | 2 | string;
 
@@ -54,9 +55,19 @@ export class ConfigComponent {
         : Observable.of('' + e));
   }
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
-    Observable.merge(
-      this.credentials.valueChanges)
-      .subscribe(v => console.log(v, this.credentials.status, this.credentials.hasError('passEqual')));
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+    const creds = localStorage.getItem('credentials');
+    if (creds) {
+      try {
+        this.credentials.setValue(JSON.parse(creds));
+      } catch (e) {
+        console.log(`Stored values were incorrect.`, e);
+      }
+    }
+  }
+
+  save() {
+    localStorage.setItem('credentials', JSON.stringify(this.credentials.value));
+    this.router.navigate(['/']);
   }
 }

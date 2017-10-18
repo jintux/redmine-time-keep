@@ -33,7 +33,7 @@
   </form>
   <div flex style="margin-top: 2rem">
     <mat-spinner *ngIf="showSpinner$ | async" strokeWidth="3" [diameter]="30"></mat-spinner>
-    <button *ngIf="showContinue$ | async" mat-button>
+    <button *ngIf="showContinue$ | async" mat-button (click)="save()">
       <span style="vertical-align: center">
         <mat-icon style="color: green;">check</mat-icon>
         Save
