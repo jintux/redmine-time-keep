@@ -2,3 +2,7 @@
 mat-sidenav-container {
   height: 100%;
 }
+
+.full-width {
+  width: 100%;
+}

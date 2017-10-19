@@ -16,8 +16,14 @@
           <span>Redmine</span>
         </mat-toolbar>
     </div>
+    <div flex [formGroup]="search">
+        <mat-form-field class="full-width">
+          <input matInput placeholder="Search" formControlName="search">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </div>
     <mat-list>
-      <mat-list-item *ngFor="let i of issues$ | async"><h3 style="padding-right: 1rem">#{{ i.id }}</h3> {{ i.subject }}</mat-list-item>
+      <mat-list-item *ngFor="let i of issues$ | async"><h3 style="padding-right: 1rem">#{{ i.id }}</h3> {{ i.title }}</mat-list-item>
     </mat-list>
   </div>
 </mat-sidenav-container>

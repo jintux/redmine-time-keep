@@ -14,8 +14,23 @@ export interface IssueParams {
   sort?: boolean;
 }
 
+export interface SearchResult {
+  datetime: Date;
+  description: string;
+  id: number;
+  title: string;
+  type: string;
+  url: string;
+}
+
+export interface SearchParams {
+  q: string;
+}
+
 export interface RedmineApi {
   getIssues(params: IssueParams): Observable<Issue[]>;
+  test(search: string): Observable<string>;
+  search(params: SearchParams): Observable<SearchResult[]>;
 }
 
 
@@ -73,7 +88,9 @@ export class RedmineService {
   getApi(config: RedmineConfig = null): RedmineApi {
     const runQuery = config ? makeQueryRunner(this.http, config) : this.runQuery;
     return {
-      getIssues: (params: IssueParams) => runQuery<any>('issues', params).map(v => v.issues)
+      getIssues: (params: IssueParams) => runQuery<any>('issues', params).map(v => v.issues),
+      test: search => runQuery<any>('search', { q: search }).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),
+      search: (params: SearchParams) => runQuery<any>('search', params).map(v => v.results)
     };
   }
 
