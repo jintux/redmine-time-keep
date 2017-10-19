@@ -30,7 +30,9 @@ export class HomeComponent implements OnInit {
     .debounceTime(500)
     .startWith('')
     .switchMap(s => this.redmine$
-      .switchMap(r => r.search({ q: s }).catch(e => Observable.of([]))));
+      .switchMap(r => r.search({ q: s })
+        .map(l => l.filter(v => v.type.indexOf('issue') === 0 ))
+        .catch(e => Observable.of([]))));
 
   constructor(private redmineService: RedmineService, private fb: FormBuilder) {
     this.refresh();

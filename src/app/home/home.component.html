@@ -23,7 +23,7 @@
         </mat-form-field>
     </div>
     <mat-list>
-      <mat-list-item *ngFor="let i of issues$ | async"><h3 style="padding-right: 1rem">#{{ i.id }}</h3> {{ i.title }}</mat-list-item>
+      <mat-list-item *ngFor="let i of issues$ | async"><app-issue-entry class="full-width" [id]="i.id" [title]="i.title"></app-issue-entry></mat-list-item>
     </mat-list>
   </div>
 </mat-sidenav-container>
