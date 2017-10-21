@@ -4,6 +4,11 @@ import { RedmineApi, RedmineService, SearchResult } from '../redmine.service';
 import { ReplaySubject, Observable } from 'rxjs/Rx';
 import { HttpErrorResponse } from '@angular/common/http';
 
+interface IssueHead {
+  id: number;
+  title: string;
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -33,6 +38,10 @@ export class HomeComponent implements OnInit {
     .switchMap(s => this.redmine$
       .switchMap(r => r.search({ q: s })
         .map(l => l.filter(v => v.type.indexOf('issue') === 0 ))
+        .map(i => i as IssueHead[])
+        // When search doesn't work, try intepred the query as issue id and get the issue...
+        .catch(e => r.getIssues({ issue_id: parseInt(s, 10) })
+          .map(i => i.map(j => ({ id: j.id, title: j.subject}) as IssueHead)))
         .catch(e => e instanceof HttpErrorResponse
           ? Observable.of(e.message)
           : Observable.of('' + e))))
