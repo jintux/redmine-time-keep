@@ -7,12 +7,15 @@ import { obsLog } from './log.service';
 export interface Issue {
   id: number;
   subject: string;
+  description: string;
 }
 
 export interface IssueParams {
   offset?: number;
   limit?: number;
   sort?: boolean;
+
+  issue_id?: number;
 }
 
 export interface SearchResult {

@@ -1,4 +1,4 @@
-<mat-expansion-panel>
+<mat-expansion-panel (opened)="open$.next()">
   <mat-expansion-panel-header>
     <mat-panel-title>
       #{{ id }}
@@ -7,4 +7,6 @@
       {{ title }}
     </mat-panel-description>
   </mat-expansion-panel-header>
+  <markdown [data]="description$ | async">
+  </markdown>
 </mat-expansion-panel>

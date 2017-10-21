@@ -23,8 +23,8 @@
         </mat-form-field>
     </div>
     <div flex style="color:red">{{error$ | async}}</div>
-    <mat-list>
-      <mat-list-item *ngFor="let i of issues$ | async"><app-issue-entry class="full-width" [id]="i.id" [title]="i.title"></app-issue-entry></mat-list-item>
-    </mat-list>
+    <mat-accordion>
+      <app-issue-entry *ngFor="let i of issues$ | async" class="full-width" [id]="i.id" [title]="i.title"></app-issue-entry>
+    </mat-accordion>
   </div>
 </mat-sidenav-container>

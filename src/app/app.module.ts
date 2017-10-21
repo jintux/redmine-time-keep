@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MarkdownModule } from 'angular2-markdown';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatSelectModule, MatInput, MatSidenavModule,
@@ -30,6 +31,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
+    MarkdownModule.forRoot(),
     MatToolbarModule, MatFormFieldModule, MatSelectModule,
     MatProgressSpinnerModule, MatIconModule, MatButtonModule,
     MatSidenavModule, MatListModule, MatExpansionModule
