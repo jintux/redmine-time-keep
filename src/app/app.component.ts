@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RedmineService } from './redmine.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  constructor() { }
+  // Make sure redmine instance is the same across the app
+  constructor(redmine: RedmineService) { }
 
 }
