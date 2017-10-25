@@ -16,8 +16,8 @@
           <span>Redmine</span>
           <span class="fill-remaining-space"></span>
           <form method="none" [formGroup]="durationForm">
-            <button matInput mat-icon-button (click)="timerStart()" *ngIf="!(isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
-            <button matInput mat-icon-button (click)="timerStop()" *ngIf="isRunning$ | async"><mat-icon>pause</mat-icon></button>
+            <button matInput mat-icon-button (click)="timerStartCmd$.next()" *ngIf="!(isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
+            <button matInput mat-icon-button (click)="timerStopCmd$.next()" *ngIf="isRunning$ | async"><mat-icon>pause</mat-icon></button>
             <mat-form-field class="two-chars">
               <input matInput placeholder="h" type="number" formControlName="hours" max="24" min="0">
             </mat-form-field>

@@ -26,9 +26,27 @@ export class HomeComponent implements OnInit, OnDestroy {
       search: ['']
     });
 
-  public isRunning$ = new BehaviorSubject<boolean>(false);
-  public startTime$ = new BehaviorSubject<Date>(new Date());
-  public pauseRuntime$ = new BehaviorSubject<number>(0);
+  public timerStartCmd$ = new Subject();
+  public timerStopCmd$ = new Subject();
+
+  public isRunning$ = Observable.merge(this.timerStartCmd$.mapTo(true), this.timerStopCmd$.mapTo(false));
+  public runTime$ = this.isRunning$
+    .distinctUntilChanged()
+    .scan(({ lastActionTime, duration, running }, nowRunning) => ({
+            lastActionTime: (new Date()).getTime(),
+            duration: nowRunning
+              ? duration
+              : duration + toDuration(lastActionTime),
+            running: nowRunning }),
+          { lastActionTime: (new Date()).getTime(), duration: 0, running: false })
+    .shareReplay(1);
+
+  public runningTime$ = this.runTime$
+      .switchMap(({ lastActionTime, duration, running }) => running
+        ? Observable.timer(0, 1000)
+            .map(_ => duration + toDuration(lastActionTime))
+        : Observable.of(duration))
+      .map(d => Math.floor(d / 1000));
 
   public durationForm = this.fb.group({
       hours: [0],
@@ -36,15 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       seconds: [0]
     });
 
-  private beginTime$ = Observable.combineLatest(this.startTime$, this.pauseRuntime$, (s, d) => s.getTime() - d);
-
-  public runningTime$ = this.isRunning$
-    .switchMap(r => r
-      ? this.beginTime$
-        .switchMap(b => Observable.timer(0, 1000)
-          .map(_ => toDuration(b)))
-      : this.pauseRuntime$)
-    .map(d => Math.floor(d / 1000));
 
 /*
   public test$ =
@@ -87,16 +96,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           seconds: dur % 60
         });
       }));
-  }
-
-  timerStart() {
-    this.startTime$.next(new Date());
-    this.isRunning$.next(true);
-  }
-
-  timerStop() {
-    this.beginTime$.take(1).map(toDuration).subscribe(v => this.pauseRuntime$.next(v));
-    this.isRunning$.next(false);
   }
 
   refresh() {
