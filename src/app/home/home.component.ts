@@ -34,16 +34,25 @@ export class HomeComponent implements OnInit, OnDestroy {
       search: ['']
     });
 
+  public durationForm = this.fb.group({
+    hours: [0],
+    minutes: [0],
+    seconds: [0]
+  });
+
   public timerStartCmd$ = new Subject();
   public timerStopCmd$ = new Subject();
 
   public timerAction$ = Observable.merge(
     this.timerStartCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
       lastStartTime: (new Date()).getTime(),
+      duration: this.getDuration() * 1000,
       running: true })),
-    this.timerStopCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
-      duration: timerState.duration + toDuration(timerState.lastStartTime),
-      running: false })));
+    this.timerStopCmd$.mapTo((timerState: TimerState) => timerState.running
+      ? { ...timerState,
+          duration: timerState.duration + toDuration(timerState.lastStartTime),
+          running: false }
+      : { ...timerState}));
 
   public runTime$ = this.timerAction$
     .scan((timerState, timerAction) => timerAction(timerState),
@@ -59,11 +68,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         : Observable.of(duration))
       .map(d => Math.floor(d / 1000));
 
-  public durationForm = this.fb.group({
-      hours: [0],
-      minutes: [0],
-      seconds: [0]
-    });
 
 
 /*
@@ -111,6 +115,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   refresh() {
     this.redmine$.next(this.redmineService.getApi());
+  }
+
+  getDuration() {
+    return parseInt(this.durationForm.value.hours, 10) * 3600
+      + parseInt(this.durationForm.value.minutes, 10) * 60
+      + parseInt(this.durationForm.value.seconds, 10);
   }
 
   ngOnInit() {
