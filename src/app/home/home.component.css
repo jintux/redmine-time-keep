@@ -6,3 +6,11 @@ mat-sidenav-container {
 .full-width {
   width: 100%;
 }
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.two-chars {
+  width: 3rem
+}

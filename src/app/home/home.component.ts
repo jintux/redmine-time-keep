@@ -1,7 +1,8 @@
+import { obsLog } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RedmineApi, RedmineService, SearchResult } from '../redmine.service';
-import { ReplaySubject, Observable } from 'rxjs/Rx';
+import { ReplaySubject, Observable, Subject, BehaviorSubject, Subscription } from 'rxjs/Rx';
 import { HttpErrorResponse } from '@angular/common/http';
 
 interface IssueHead {
@@ -9,18 +10,41 @@ interface IssueHead {
   title: string;
 }
 
+const toDuration = (beginTime: number) => (new Date()).getTime() - beginTime;
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   private redmine$ = new ReplaySubject<RedmineApi>(1);
+  private conns = new Subscription();
 
   public search = this.fb.group({
       search: ['']
     });
+
+  public isRunning$ = new BehaviorSubject<boolean>(false);
+  public startTime$ = new BehaviorSubject<Date>(new Date());
+  public pauseRuntime$ = new BehaviorSubject<number>(0);
+
+  public durationForm = this.fb.group({
+      hours: [0],
+      minutes: [0],
+      seconds: [0]
+    });
+
+  private beginTime$ = Observable.combineLatest(this.startTime$, this.pauseRuntime$, (s, d) => s.getTime() - d);
+
+  public runningTime$ = this.isRunning$
+    .switchMap(r => r
+      ? this.beginTime$
+        .switchMap(b => Observable.timer(0, 1000)
+          .map(_ => toDuration(b)))
+      : this.pauseRuntime$)
+    .map(d => Math.floor(d / 1000));
 
 /*
   public test$ =
@@ -54,6 +78,25 @@ export class HomeComponent implements OnInit {
 
   constructor(private redmineService: RedmineService, private fb: FormBuilder) {
     this.refresh();
+    this.conns.add(this.runningTime$
+      .subscribe(dur => {
+        // console.log('Duration', dur);
+        this.durationForm.setValue({
+          hours: Math.floor(dur / 3600),
+          minutes: Math.floor((dur % 3600) / 60),
+          seconds: dur % 60
+        });
+      }));
+  }
+
+  timerStart() {
+    this.startTime$.next(new Date());
+    this.isRunning$.next(true);
+  }
+
+  timerStop() {
+    this.beginTime$.take(1).map(toDuration).subscribe(v => this.pauseRuntime$.next(v));
+    this.isRunning$.next(false);
   }
 
   refresh() {
@@ -64,4 +107,7 @@ export class HomeComponent implements OnInit {
     this.refresh();
   }
 
+  ngOnDestroy() {
+    this.conns.unsubscribe();
+  }
 }

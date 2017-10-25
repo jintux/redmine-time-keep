@@ -14,6 +14,20 @@
               <mat-icon>menu</mat-icon>
           </button>
           <span>Redmine</span>
+          <span class="fill-remaining-space"></span>
+          <form method="none" [formGroup]="durationForm">
+            <button matInput mat-icon-button (click)="timerStart()" *ngIf="!(isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
+            <button matInput mat-icon-button (click)="timerStop()" *ngIf="isRunning$ | async"><mat-icon>pause</mat-icon></button>
+            <mat-form-field class="two-chars">
+              <input matInput placeholder="h" type="number" formControlName="hours" max="24" min="0">
+            </mat-form-field>
+            <mat-form-field class="two-chars">
+              <input matInput placeholder="m" type="number" formControlName="minutes" max="59" min="0">
+            </mat-form-field>
+            <mat-form-field class="two-chars">
+              <input matInput placeholder="s" type="number" formControlName="seconds" max="59" min="0">
+            </mat-form-field>
+          </form>
         </mat-toolbar>
     </div>
     <div flex [formGroup]="search">
