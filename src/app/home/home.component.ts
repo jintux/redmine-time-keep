@@ -10,6 +10,14 @@ interface IssueHead {
   title: string;
 }
 
+interface TimerState {
+  lastStartTime: number;
+  duration: number;
+  running: boolean;
+}
+
+type TimerActionFn = (current: TimerState) => TimerState;
+
 const toDuration = (beginTime: number) => (new Date()).getTime() - beginTime;
 
 @Component({
@@ -29,22 +37,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   public timerStartCmd$ = new Subject();
   public timerStopCmd$ = new Subject();
 
-  public isRunning$ = Observable.merge(this.timerStartCmd$.mapTo(true), this.timerStopCmd$.mapTo(false));
-  public runTime$ = this.isRunning$
-    .distinctUntilChanged()
-    .scan(({ lastActionTime, duration, running }, nowRunning) => ({
-            lastActionTime: (new Date()).getTime(),
-            duration: nowRunning
-              ? duration
-              : duration + toDuration(lastActionTime),
-            running: nowRunning }),
-          { lastActionTime: (new Date()).getTime(), duration: 0, running: false })
+  public timerAction$ = Observable.merge(
+    this.timerStartCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
+      lastStartTime: (new Date()).getTime(),
+      running: true })),
+    this.timerStopCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
+      duration: timerState.duration + toDuration(timerState.lastStartTime),
+      running: false })));
+
+  public runTime$ = this.timerAction$
+    .scan((timerState, timerAction) => timerAction(timerState),
+      { lastStartTime: (new Date()).getTime(), duration: 0, running: false } as TimerState)
     .shareReplay(1);
 
+  public isRunning$ = this.runTime$.map(s => s.running);
+
   public runningTime$ = this.runTime$
-      .switchMap(({ lastActionTime, duration, running }) => running
+      .switchMap(({ lastStartTime, duration, running }) => running
         ? Observable.timer(0, 1000)
-            .map(_ => duration + toDuration(lastActionTime))
+            .map(_ => duration + toDuration(lastStartTime))
         : Observable.of(duration))
       .map(d => Math.floor(d / 1000));
 
@@ -72,7 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       .switchMap(r => r.search({ q: s })
         .map(l => l.filter(v => v.type.indexOf('issue') === 0 ))
         .map(i => i as IssueHead[])
-        // When search doesn't work, try intepred the query as issue id and get the issue...
+        // When search doesn't work, try interpred the query as issue id and get the issue...
         .catch(e => r.getIssues({ issue_id: parseInt(s, 10) })
           .map(i => i.map(j => ({ id: j.id, title: j.subject}) as IssueHead)))
         .catch(e => e instanceof HttpErrorResponse
