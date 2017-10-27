@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MarkdownModule } from 'angular2-markdown';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule, MatSelectModule, MatInput, MatSidenavModule,
+import { MatFormFieldModule, MatSelectModule, MatInputModule, MatSidenavModule,
   MatToolbarModule, MatProgressSpinnerModule, MatIconModule,
   MatButtonModule, MatListModule, MatExpansionModule } from '@angular/material';
 
@@ -23,7 +23,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent, MatInput, ConfigComponent, HomeComponent, IssueEntryComponent
+    AppComponent, ConfigComponent, HomeComponent, IssueEntryComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +34,8 @@ const routes: Routes = [
     MarkdownModule.forRoot(),
     MatToolbarModule, MatFormFieldModule, MatSelectModule,
     MatProgressSpinnerModule, MatIconModule, MatButtonModule,
-    MatSidenavModule, MatListModule, MatExpansionModule
+    MatSidenavModule, MatListModule, MatExpansionModule,
+    MatInputModule
   ],
   providers: [RedmineService],
   bootstrap: [AppComponent]
