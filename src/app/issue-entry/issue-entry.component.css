@@ -1,0 +1,19 @@
+.issue {
+  background-color: #fff;
+  border-width: 1px;
+  border-color: #c3c3c3;
+  border-style: solid;
+  margin: .3rem;
+  padding: .3rem;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border-radius: 3px;
+  transition: 0.3s;
+  max-width: 15rem;
+  flex-grow: 1;
+  height: 12rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.issue:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}

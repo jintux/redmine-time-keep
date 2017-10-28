@@ -1,12 +1,8 @@
-<mat-expansion-panel (opened)="open$.next()">
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      #{{ id }}
-    </mat-panel-title>
-    <mat-panel-description>
-      {{ title }}
-    </mat-panel-description>
-  </mat-expansion-panel-header>
-  <markdown [data]="description$ | async">
-  </markdown>
-</mat-expansion-panel>
+<div class="issue">
+  <h4>
+    #{{ id }}
+  </h4>
+  <div>
+    {{ title }}
+  </div>
+</div>

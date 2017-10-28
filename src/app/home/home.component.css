@@ -14,3 +14,9 @@ mat-sidenav-container {
 .two-chars {
   width: 3rem
 }
+
+.issues {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #eee;
+}
