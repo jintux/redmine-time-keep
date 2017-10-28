@@ -70,14 +70,32 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-/*
-  public test$ =
-    this.search.valueChanges
+
+  public test$ = this.redmine$
+    .switchMap(r => this.search.valueChanges
       .debounceTime(500)
       .map(g => g.search as string)
-      .switchMap(s => this.redmine$
-        .switchMap(r => r.test(s)));
-*/
+      .switchMap(s => r.test('time_entries',
+      {
+        'f[]': 'user_id',
+        'op[user_id]': '=',
+        'v[user_id][]': 'me'
+      })))
+/*        'utf8=%E2%9C%93'
+        + '&f%5B%5D=spent_on'
+        + '&op%5Bspent_on%5D=*'
+        + '&f%5B%5D=user_id'
+        + '&op%5Buser_id%5D=%3D'
+        + '&v%5Buser_id%5D%5B%5D=me'
+        + '&f%5B%5D=&c%5B%5D=project'
+        + '&c%5B%5D=spent_on'
+        + '&c%5B%5D=user'
+        + '&c%5B%5D=activity'
+        + '&c%5B%5D=issue'
+        + '&c%5B%5D=comments'
+        + '&c%5B%5D=hours')))
+*/      .subscribe(obsLog('test'));
+
 
   public issuesOrError$ = this.search.valueChanges
     .map(g => g.search as string)

@@ -33,7 +33,7 @@ export interface SearchParams {
 
 export interface RedmineApi {
   getIssues(params: IssueParams): Observable<Issue[]>;
-  test(search: string): Observable<string>;
+  test(cmd: string, arg: any): Observable<string>;
   search(params: SearchParams): Observable<SearchResult[]>;
 }
 
@@ -49,6 +49,8 @@ const toRedmineQuery = (cmd: string, params?: any) => {
   let str = '';
   if (!params) {
     return cmd + '.json';
+  } else if (typeof params === 'string') {
+    return cmd + '.json?' + params;
   }
   // tslint:disable-next-line:forin
   for (const key in params) {
@@ -93,7 +95,7 @@ export class RedmineService {
     const runQuery = config ? makeQueryRunner(this.http, config) : this.runQuery;
     return {
       getIssues: (params: IssueParams) => runQuery<any>('issues', params).map(v => v.issues),
-      test: search => runQuery<any>('search', { q: search }).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),
+      test: (cmd: string, arg: any) => runQuery<any>(cmd, arg).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),
       search: (params: SearchParams) => runQuery<any>('search', params).map(v => v.results)
     };
   }
