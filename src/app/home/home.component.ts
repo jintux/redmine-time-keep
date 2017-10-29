@@ -1,7 +1,7 @@
 import { obsLog } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RedmineApi, RedmineService, SearchResult, addFilter, makeQuery } from '../redmine.service';
+import { RedmineApi, RedmineService, SearchResult, addFilter, makeQuery, Query } from './../redmine.service';
 import { ReplaySubject, Observable, Subject, BehaviorSubject, Subscription } from 'rxjs/Rx';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -86,9 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     .debounceTime(500)
     .startWith('')
     .switchMap(s => this.redmine$
-      .switchMap(r => r.run(makeQuery('issues')
-          .addFilter('assigned_to_id', '=', 'me')
-          .addFilter('status_id', 'o'))
+      .switchMap(r => r.run(this.makeIssueQuery(s))
         .map(i => i.issues.map(j => ({ id: j.id, tracker: j.tracker.name, title: j.subject}) as IssueHead))
         .catch(e => e instanceof HttpErrorResponse
           ? Observable.of(e.message)
@@ -121,6 +119,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     return parseInt(this.durationForm.value.hours, 10) * 3600
       + parseInt(this.durationForm.value.minutes, 10) * 60
       + parseInt(this.durationForm.value.seconds, 10);
+  }
+
+  makeIssueQuery(search: string): Query {
+    const ret = makeQuery('issues');
+    if (search.length === 0) {
+      ret
+        .addFilter('assigned_to_id', '=', 'me')
+        .addFilter('status_id', 'o');
+    } else if (isNaN(search as any)) {
+      ret
+        .addFilter('assigned_to_id', '=', 'me')
+        .addFilter('status_id', 'o')
+        .addFilter('subject', '~', search);
+    } else {
+      ret.params = {
+        issue_id: search
+      };
+    }
+
+    return ret;
   }
 
   ngOnInit() {

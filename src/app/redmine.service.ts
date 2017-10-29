@@ -63,7 +63,7 @@ export const addFilter = (params: any, name: string, operation: string, value?: 
   return ret;
 };
 
-class Query {
+export class Query {
   constructor(public cmd: string, public params = {}) {
   }
 
