@@ -1,7 +1,7 @@
 import { obsLog } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RedmineApi, RedmineService, SearchResult } from '../redmine.service';
+import { RedmineApi, RedmineService, SearchResult, addFilter } from '../redmine.service';
 import { ReplaySubject, Observable, Subject, BehaviorSubject, Subscription } from 'rxjs/Rx';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -76,25 +76,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       .debounceTime(500)
       .map(g => g.search as string)
       .switchMap(s => r.test('time_entries',
-      {
-        'f[]': 'user_id',
-        'op[user_id]': '=',
-        'v[user_id][]': 'me'
-      })))
-/*        'utf8=%E2%9C%93'
-        + '&f%5B%5D=spent_on'
-        + '&op%5Bspent_on%5D=*'
-        + '&f%5B%5D=user_id'
-        + '&op%5Buser_id%5D=%3D'
-        + '&v%5Buser_id%5D%5B%5D=me'
-        + '&f%5B%5D=&c%5B%5D=project'
-        + '&c%5B%5D=spent_on'
-        + '&c%5B%5D=user'
-        + '&c%5B%5D=activity'
-        + '&c%5B%5D=issue'
-        + '&c%5B%5D=comments'
-        + '&c%5B%5D=hours')))
-*/      .subscribe(obsLog('test'));
+        addFilter({}, 'user_id', '=', 'me'))))
+      .subscribe(obsLog('test'));
 
 
   public issuesOrError$ = this.search.valueChanges

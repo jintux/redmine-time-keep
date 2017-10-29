@@ -44,6 +44,16 @@ export interface RedmineConfig {
   password: string;
 }
 
+export const addFilter = (params: any, name: string, operation: string, value?: string) => {
+  const ret = { ...params,
+    'f[]': name };
+  ret[`op[${name}]`] = operation;
+  if (value) {
+    ret[`v[${name}][]`] = value;
+  }
+  return ret;
+};
+
 
 const toRedmineQuery = (cmd: string, params?: any) => {
   let str = '';
