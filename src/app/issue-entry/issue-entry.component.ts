@@ -1,6 +1,7 @@
 import { RedmineService } from './../redmine.service';
 import { Observable, Subject } from 'rxjs/Rx';
 import { Component, OnInit, Input } from '@angular/core';
+import { IssueHead } from './../home/home.component';
 
 @Component({
   selector: 'app-issue-entry',
@@ -9,13 +10,12 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class IssueEntryComponent implements OnInit {
 
-  @Input() id: number;
-  @Input() title: string;
+  @Input() head: IssueHead;
 
   public open$ = new Subject<void>();
 
   public description$ = this.open$.asObservable()
-    .switchMap(_ => this.redmine.getApi().getIssues({issue_id: this.id}))
+    .switchMap(_ => this.redmine.getApi().getIssues({issue_id: this.head.id}))
     .map(r => r.length > 0 ? r[0].description : '')
     .startWith('');
 
