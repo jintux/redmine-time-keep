@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 import { ConfigComponent } from './config/config.component';
 import { HomeComponent } from './home/home.component';
 import { IssueEntryComponent } from './issue-entry/issue-entry.component';
+import { DurationComponent } from './duration/duration.component';
 
 const routes: Routes = [
   { path: 'config', component: ConfigComponent },
@@ -23,7 +24,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent, ConfigComponent, HomeComponent, IssueEntryComponent
+    AppComponent, ConfigComponent, HomeComponent, IssueEntryComponent, DurationComponent
   ],
   imports: [
     BrowserModule,

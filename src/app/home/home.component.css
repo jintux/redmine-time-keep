@@ -11,10 +11,6 @@ mat-sidenav-container {
   flex: 1 1 auto;
 }
 
-.two-chars {
-  width: 3rem
-}
-
 .issues {
   display: flex;
   flex-wrap: wrap;

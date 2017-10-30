@@ -1,6 +1,6 @@
 import { obsLog } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RedmineApi, RedmineService, SearchResult, addFilter, makeQuery, Query } from './../redmine.service';
 import { ReplaySubject, Observable, Subject, BehaviorSubject, Subscription } from 'rxjs/Rx';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -26,30 +26,25 @@ const toDuration = (beginTime: number) => (new Date()).getTime() - beginTime;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
 
   private redmine$ = new ReplaySubject<RedmineApi>(1);
-  private conns = new Subscription();
 
   public search = this.fb.group({
       search: ['']
     });
-
-  public durationForm = this.fb.group({
-    hours: [0],
-    minutes: [0],
-    seconds: [0]
-  });
 
   public timerStartCmd$ = new Subject();
   public timerStopCmd$ = new Subject();
   public searchAgain$ = new Subject();
   public showCancel$ = this.search.valueChanges.map(v => v.search.length !== 0);
 
+  private currDuration = 0;
+
   public timerAction$ = Observable.merge(
     this.timerStartCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
       lastStartTime: (new Date()).getTime(),
-      duration: this.getDuration() * 1000,
+      duration: this.currDuration * 1000,
       running: true })),
     this.timerStopCmd$.mapTo((timerState: TimerState) => timerState.running
       ? { ...timerState,
@@ -103,25 +98,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private redmineService: RedmineService, private fb: FormBuilder) {
     this.refresh();
-    this.conns.add(this.runningTime$
-      .subscribe(dur => {
-        // console.log('Duration', dur);
-        this.durationForm.setValue({
-          hours: Math.floor(dur / 3600),
-          minutes: Math.floor((dur % 3600) / 60),
-          seconds: dur % 60
-        });
-      }));
   }
 
   refresh() {
     this.redmine$.next(this.redmineService.getApi());
-  }
-
-  getDuration() {
-    return parseInt(this.durationForm.value.hours, 10) * 3600
-      + parseInt(this.durationForm.value.minutes, 10) * 60
-      + parseInt(this.durationForm.value.seconds, 10);
   }
 
   makeIssueQuery(search: string): Query {
@@ -144,15 +124,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     return ret;
   }
 
+  onDurationChange(newVal) {
+    if (newVal instanceof Event) {
+      return; // Somtimes it is of type Event??
+    }
+    this.currDuration = newVal;
+  }
+
   clearSearch() {
     this.search.setValue({search: ''});
   }
 
   ngOnInit() {
     this.refresh();
-  }
-
-  ngOnDestroy() {
-    this.conns.unsubscribe();
   }
 }

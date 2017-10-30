@@ -1,0 +1,11 @@
+<form method="none" [formGroup]="durationForm">
+  <mat-form-field class="two-chars">
+    <input matInput placeholder="h" type="number" formControlName="hours" max="24" min="0">
+  </mat-form-field>
+  <mat-form-field class="two-chars">
+    <input matInput placeholder="m" type="number" formControlName="minutes" max="59" min="0">
+  </mat-form-field>
+  <mat-form-field class="two-chars">
+    <input matInput placeholder="s" type="number" formControlName="seconds" max="59" min="0">
+  </mat-form-field>
+</form>

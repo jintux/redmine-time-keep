@@ -15,19 +15,9 @@
           </button>
           <span>Redmine</span>
           <span class="fill-remaining-space"></span>
-          <form method="none" [formGroup]="durationForm">
-            <button matInput mat-icon-button (click)="timerStartCmd$.next()" *ngIf="!(isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
-            <button matInput mat-icon-button (click)="timerStopCmd$.next()" *ngIf="isRunning$ | async"><mat-icon>pause</mat-icon></button>
-            <mat-form-field class="two-chars">
-              <input matInput placeholder="h" type="number" formControlName="hours" max="24" min="0">
-            </mat-form-field>
-            <mat-form-field class="two-chars">
-              <input matInput placeholder="m" type="number" formControlName="minutes" max="59" min="0">
-            </mat-form-field>
-            <mat-form-field class="two-chars">
-              <input matInput placeholder="s" type="number" formControlName="seconds" max="59" min="0">
-            </mat-form-field>
-          </form>
+          <button matInput mat-icon-button (click)="timerStartCmd$.next()" *ngIf="!(isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
+          <button matInput mat-icon-button (click)="timerStopCmd$.next()" *ngIf="isRunning$ | async"><mat-icon>pause</mat-icon></button>
+          <app-duration [duration$]="runningTime$" (change)="onDurationChange($event)"></app-duration>
         </mat-toolbar>
     </div>
     <div [formGroup]="search">
