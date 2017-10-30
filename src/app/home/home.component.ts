@@ -43,6 +43,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public timerStartCmd$ = new Subject();
   public timerStopCmd$ = new Subject();
+  public searchAgain$ = new Subject();
+  public showCancel$ = this.search.valueChanges.map(v => v.search.length !== 0);
 
   public timerAction$ = Observable.merge(
     this.timerStartCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
@@ -85,6 +87,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     .map(g => g.search as string)
     .debounceTime(500)
     .startWith('')
+    .switchMap(v => this.searchAgain$.mapTo(v).startWith(v))
     .switchMap(s => this.redmine$
       .switchMap(r => r.run(this.makeIssueQuery(s))
         .map(i => i.issues.map(j => ({ id: j.id, tracker: j.tracker.name, title: j.subject}) as IssueHead))
@@ -139,6 +142,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     return ret;
+  }
+
+  clearSearch() {
+    this.search.setValue({search: ''});
   }
 
   ngOnInit() {

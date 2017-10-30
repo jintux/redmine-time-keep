@@ -1,4 +1,4 @@
-<mat-sidenav-container fullscreen>
+<mat-sidenav-container fullscreen class="content">
   <mat-sidenav #sidenav>
       <mat-toolbar>
         <span>Navigation</span>
@@ -30,10 +30,11 @@
           </form>
         </mat-toolbar>
     </div>
-    <div flex [formGroup]="search">
+    <div [formGroup]="search">
         <mat-form-field class="full-width">
           <input matInput placeholder="Search" formControlName="search">
-          <mat-icon matSuffix>search</mat-icon>
+          <button matInput matSuffix mat-icon-button (click)="searchAgain$.next()" *ngIf="!(showCancel$ | async)"><mat-icon>search</mat-icon></button>
+          <button matInput matSuffix mat-icon-button (click)="clearSearch()" *ngIf="showCancel$ | async"><mat-icon>clear</mat-icon></button>
         </mat-form-field>
     </div>
     <div flex style="color:red">{{error$ | async}}</div>

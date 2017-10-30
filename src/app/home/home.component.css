@@ -18,5 +18,12 @@ mat-sidenav-container {
 .issues {
   display: flex;
   flex-wrap: wrap;
-  background-color: #eee;
+}
+
+.content {
+ background-color: #eee;
+}
+
+.searchBar {
+  display: flex;
 }
