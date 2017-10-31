@@ -13,7 +13,7 @@
     </div>
     <div flex style="color:red">{{error$ | async}}</div>
     <div class="issues">
-      <app-issue-entry *ngFor="let i of issues$ | async" [head]="i"></app-issue-entry>
+      <app-issue-entry *ngFor="let i of issues$ | async" [head]="i" (onSelect)="commit(i)"></app-issue-entry>
     </div>
   </div>
 </app-main-frame>

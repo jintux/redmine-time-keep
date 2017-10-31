@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { obsLog } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
@@ -96,7 +97,7 @@ export class HomeComponent implements OnInit {
   public error$ = this.issuesOrError$
     .map(v => !(v instanceof Array) ? v : '');
 
-  constructor(private redmineService: RedmineService, private fb: FormBuilder) {
+  constructor(private redmineService: RedmineService, private fb: FormBuilder, private router: Router) {
     this.refresh();
   }
 
@@ -137,5 +138,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.refresh();
+  }
+
+  commit(issue: IssueHead) {
+    this.router.navigate(['/commit', issue.id]);
   }
 }

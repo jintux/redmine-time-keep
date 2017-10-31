@@ -12,6 +12,7 @@
   flex-grow: 1;
   height: 12rem;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  cursor: pointer;
 }
 
 .issue:hover {

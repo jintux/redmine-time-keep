@@ -17,15 +17,18 @@ import { HomeComponent } from './home/home.component';
 import { IssueEntryComponent } from './issue-entry/issue-entry.component';
 import { DurationComponent } from './duration/duration.component';
 import { MainFrameComponent } from './main-frame/main-frame.component';
+import { CommitComponent } from './commit/commit.component';
 
 const routes: Routes = [
   { path: 'config', component: ConfigComponent },
-  { path: '', component: HomeComponent }
+  { path: '', component: HomeComponent },
+  { path: 'commit/:issue', component: CommitComponent }
 ];
 
 @NgModule({
   declarations: [
-    AppComponent, ConfigComponent, HomeComponent, IssueEntryComponent, DurationComponent, MainFrameComponent
+    AppComponent, ConfigComponent, HomeComponent, IssueEntryComponent,
+    DurationComponent, MainFrameComponent, CommitComponent
   ],
   imports: [
     BrowserModule,

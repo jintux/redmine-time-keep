@@ -1,6 +1,6 @@
 import { RedmineService } from './../redmine.service';
 import { Observable, Subject } from 'rxjs/Rx';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { IssueHead } from './../home/home.component';
 
 @Component({
@@ -11,6 +11,7 @@ import { IssueHead } from './../home/home.component';
 export class IssueEntryComponent implements OnInit {
 
   @Input() head: IssueHead;
+  @Output() onSelect = new EventEmitter();
 
   public open$ = new Subject<void>();
 
