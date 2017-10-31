@@ -1,3 +1,4 @@
+import { WorktimeService } from './../worktime.service';
 import { Router } from '@angular/router';
 import { logObs } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
@@ -12,16 +13,6 @@ export interface IssueHead {
   title: string;
 }
 
-interface TimerState {
-  lastStartTime: number;
-  duration: number;
-  running: boolean;
-}
-
-type TimerActionFn = (current: TimerState) => TimerState;
-
-const toDuration = (beginTime: number) => (new Date()).getTime() - beginTime;
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -35,39 +26,8 @@ export class HomeComponent implements OnInit {
       search: ['']
     });
 
-  public timerStartCmd$ = new Subject();
-  public timerStopCmd$ = new Subject();
   public searchAgain$ = new Subject();
   public showCancel$ = this.search.valueChanges.map(v => v.search.length !== 0);
-
-  private currDuration = 0;
-
-  public timerAction$ = Observable.merge(
-    this.timerStartCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
-      lastStartTime: (new Date()).getTime(),
-      duration: this.currDuration * 1000,
-      running: true })),
-    this.timerStopCmd$.mapTo((timerState: TimerState) => timerState.running
-      ? { ...timerState,
-          duration: timerState.duration + toDuration(timerState.lastStartTime),
-          running: false }
-      : { ...timerState}));
-
-  public runTime$ = this.timerAction$
-    .scan((timerState, timerAction) => timerAction(timerState),
-      { lastStartTime: (new Date()).getTime(), duration: 0, running: false } as TimerState)
-    .shareReplay(1);
-
-  public isRunning$ = this.runTime$.map(s => s.running);
-
-  public runningTime$ = this.runTime$
-      .switchMap(({ lastStartTime, duration, running }) => running
-        ? Observable.timer(0, 1000)
-            .map(_ => duration + toDuration(lastStartTime))
-        : Observable.of(duration))
-      .map(d => Math.floor(d / 1000));
-
-
 
 
   public test$ = this.redmine$
@@ -97,7 +57,7 @@ export class HomeComponent implements OnInit {
   public error$ = this.issuesOrError$
     .map(v => !(v instanceof Array) ? v : '');
 
-  constructor(private redmineService: RedmineService, private fb: FormBuilder, private router: Router) {
+  constructor(private redmineService: RedmineService, private fb: FormBuilder, private router: Router, public worktime: WorktimeService) {
     this.refresh();
   }
 
@@ -129,7 +89,7 @@ export class HomeComponent implements OnInit {
     if (newVal instanceof Event) {
       return; // Somtimes it is of type Event??
     }
-    this.currDuration = newVal;
+    this.worktime.setDuration(newVal);
   }
 
   clearSearch() {

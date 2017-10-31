@@ -1,7 +1,7 @@
 <app-main-frame name="Redmine">
-  <button matInput mat-icon-button main-frame-toolbar (click)="timerStartCmd$.next()" *ngIf="!(isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
-  <button matInput mat-icon-button main-frame-toolbar (click)="timerStopCmd$.next()" *ngIf="isRunning$ | async"><mat-icon>pause</mat-icon></button>
-  <app-duration main-frame-toolbar [duration$]="runningTime$" (change)="onDurationChange($event)"></app-duration>
+  <button matInput mat-icon-button main-frame-toolbar (click)="worktime.start()" *ngIf="!(worktime.isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
+  <button matInput mat-icon-button main-frame-toolbar (click)="worktime.stop()" *ngIf="worktime.isRunning$ | async"><mat-icon>pause</mat-icon></button>
+  <app-duration main-frame-toolbar [duration$]="worktime.runningTime$" (change)="onDurationChange($event)"></app-duration>
 
   <div main-frame-body>
     <div [formGroup]="search">

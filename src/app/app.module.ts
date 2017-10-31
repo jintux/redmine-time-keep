@@ -1,3 +1,4 @@
+import { WorktimeService } from './worktime.service';
 import { RedmineService } from './redmine.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -42,7 +43,7 @@ const routes: Routes = [
     MatSidenavModule, MatListModule, MatExpansionModule,
     MatInputModule
   ],
-  providers: [RedmineService],
+  providers: [RedmineService, WorktimeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

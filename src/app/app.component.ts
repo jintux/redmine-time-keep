@@ -1,3 +1,4 @@
+import { WorktimeService } from './worktime.service';
 import { Component } from '@angular/core';
 import { RedmineService } from './redmine.service';
 
@@ -9,6 +10,6 @@ import { RedmineService } from './redmine.service';
 export class AppComponent {
 
   // Make sure redmine instance is the same across the app
-  constructor(redmine: RedmineService) { }
+  constructor(redmine: RedmineService, worktime: WorktimeService) { }
 
 }
