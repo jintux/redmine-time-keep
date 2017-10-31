@@ -11,5 +11,4 @@ export class AppComponent {
 
   // Make sure redmine instance is the same across the app
   constructor(redmine: RedmineService, worktime: WorktimeService) { }
-
 }

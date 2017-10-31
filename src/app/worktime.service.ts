@@ -1,5 +1,5 @@
-import { Subject, Observable } from 'rxjs/Rx';
-import { Injectable } from '@angular/core';
+import { Subject, Observable, Subscription } from 'rxjs/Rx';
+import { Injectable, OnDestroy } from '@angular/core';
 
 
 interface TimerState {
@@ -13,27 +13,26 @@ type TimerActionFn = (current: TimerState) => TimerState;
 const toDuration = (beginTime: number) => (new Date()).getTime() - beginTime;
 
 @Injectable()
-export class WorktimeService {
-
-  private currDuration = 0;
+export class WorktimeService implements OnDestroy {
+  private conns = new Subscription();
+  private currState: TimerState = { lastStartTime: (new Date()).getTime(), duration: 0, running: false };
 
 
   private startCmd$ = new Subject();
   private stopCmd$ = new Subject();
   private action$ = Observable.merge(
     this.startCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
-      lastStartTime: (new Date()).getTime(),
-      duration: this.currDuration * 1000,
-      running: true })),
+        lastStartTime: (new Date()).getTime(),
+        duration: this.currState.duration,
+        running: true })),
     this.stopCmd$.mapTo((timerState: TimerState) => timerState.running
-      ? { ...timerState,
-          duration: timerState.duration + toDuration(timerState.lastStartTime),
-          running: false }
-      : { ...timerState }));
+        ? { ...timerState,
+            duration: timerState.duration + toDuration(timerState.lastStartTime),
+            running: false }
+        : { ...timerState } ));
 
   public timerState$ = this.action$
-    .scan((timerState, timerAction) => timerAction(timerState),
-      { lastStartTime: (new Date()).getTime(), duration: this.currDuration, running: false } as TimerState)
+    .scan((timerState, timerAction) => timerAction(timerState), this.currState)
     .shareReplay(1);
 
   public isRunning$ = this.timerState$.map(s => s.running);
@@ -45,7 +44,14 @@ export class WorktimeService {
         : Observable.of(duration))
       .map(d => Math.floor(d / 1000));
 
-  constructor() { }
+  constructor() {
+    this.conns.add(this.timerState$.subscribe(v => this.currState = { ...v }));
+  }
+
+  ngOnDestroy() {
+    this.conns.unsubscribe();
+  }
+
 
   start() {
     this.startCmd$.next();
@@ -56,6 +62,6 @@ export class WorktimeService {
   }
 
   setDuration(newVal: number) {
-    this.currDuration = newVal;
+    this.currState.duration = newVal * 1000;
   }
 }
