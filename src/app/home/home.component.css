@@ -1,23 +1,10 @@
-
-mat-sidenav-container {
-  height: 100%;
-}
-
 .full-width {
   width: 100%;
-}
-
-.fill-remaining-space {
-  flex: 1 1 auto;
 }
 
 .issues {
   display: flex;
   flex-wrap: wrap;
-}
-
-.content {
- background-color: #eee;
 }
 
 .searchBar {

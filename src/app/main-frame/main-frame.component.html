@@ -1,0 +1,23 @@
+<mat-sidenav-container fullscreen class="content">
+  <mat-sidenav #sidenav>
+      <mat-toolbar>
+        <span>Navigation</span>
+        <mat-toolbar-row>
+          <a mat-button routerLink="/config"><mat-icon>settings</mat-icon>Configure Redmine</a>
+        </mat-toolbar-row>
+      </mat-toolbar>
+  </mat-sidenav>
+  <div layout="column">
+    <div flex>
+        <mat-toolbar color="primary">
+          <button mat-icon-button (click)="sidenav.toggle()">
+              <mat-icon>menu</mat-icon>
+          </button>
+          <span>{{ name }}</span>
+          <span class="fill-remaining-space"></span>
+          <ng-content select="[main-frame-toolbar]"></ng-content>
+        </mat-toolbar>
+    </div>
+    <ng-content select="[main-frame-body]"></ng-content>
+  </div>
+</mat-sidenav-container>
