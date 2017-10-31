@@ -2,7 +2,7 @@ import { IssueParams } from './redmine.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
-import { obsLog } from './log.service';
+import { logObs } from './log.service';
 
 export interface Issue {
   id: number;
@@ -109,7 +109,7 @@ const makeQueryRunner = (http: HttpClient, cred: RedmineConfig) => <T>(query: Qu
   const queryUrl = toRedmineQuery(query.cmd, query.params);
   console.log('Running query', queryUrl, query);
   return http.get<T>(cred.url + '/' + queryUrl, { headers })
-    .do(obsLog('Query ' + queryUrl));
+    .do(logObs('Query ' + queryUrl));
 };
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { obsLog } from './../log.service';
+import { logObs } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { RedmineApi, RedmineService, SearchResult, addFilter, makeQuery, Query } from './../redmine.service';
@@ -76,7 +76,7 @@ export class HomeComponent implements OnInit {
       .map(g => g.search as string)
       .switchMap(s => r.run(makeQuery('time_entries')
         .addFilter('user_id', '=', 'me'))))
-      .subscribe(obsLog('test'));
+      .subscribe(logObs('test'));
 
 
   public issuesOrError$ = this.search.valueChanges
