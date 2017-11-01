@@ -4,10 +4,15 @@ import { Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
 import { logObs } from './log.service';
 
+export interface IdAndName {
+  id: number;
+  name: string;
+}
 export interface Issue {
   id: number;
-  subject: string;
   description: string;
+  subject: string;
+  tracker: IdAndName;
 }
 
 export interface IssueParams {
@@ -131,7 +136,7 @@ export class RedmineService {
   getApi(config: RedmineConfig = null): RedmineApi {
     const runQuery = config ? makeQueryRunner(this.http, config) : this.runQuery;
     return {
-      getIssues: (params: IssueParams) => runQuery<any>(makeQuery('issues', params)).map(v => v.issues),
+      getIssues: (params: IssueParams) => runQuery<any>(makeQuery('issues', params)).do(logObs('***getIssues')).map(v => v.issues),
 //      test: (cmd: string, arg: any) => runQuery<any>(cmd, arg).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),
 //      search: (params: SearchParams) => runQuery<any>('search', params).map(v => v.results)
       run: (query: Query) => runQuery<any>(query)

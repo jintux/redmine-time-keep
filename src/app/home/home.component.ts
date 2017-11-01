@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   public searchAgain$ = new Subject();
   public showCancel$ = this.search.valueChanges.map(v => v.search.length !== 0);
 
-
+/*
   public test$ = this.redmine$
     .switchMap(r => this.search.valueChanges
       .debounceTime(500)
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
       .switchMap(s => r.run(makeQuery('time_entries')
         .addFilter('user_id', '=', 'me'))))
       .subscribe(logObs('test'));
-
+*/
 
   public issuesOrError$ = this.search.valueChanges
     .map(g => g.search as string)
@@ -101,6 +101,7 @@ export class HomeComponent implements OnInit {
   }
 
   commit(issue: IssueHead) {
+    this.worktime.stop();
     this.router.navigate(['/commit', issue.id]);
   }
 }
