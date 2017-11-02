@@ -135,6 +135,9 @@ export class RedmineService {
 
   getApi(config: RedmineConfig = null): RedmineApi {
     const runQuery = config ? makeQueryRunner(this.http, config) : this.runQuery;
+    if (!runQuery) {
+      throw new Error('Redmine not configured');
+    }
     return {
       getIssues: (params: IssueParams) => runQuery<any>(makeQuery('issues', params)).do(logObs('***getIssues')).map(v => v.issues),
 //      test: (cmd: string, arg: any) => runQuery<any>(cmd, arg).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),

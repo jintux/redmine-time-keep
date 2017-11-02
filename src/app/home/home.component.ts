@@ -62,7 +62,12 @@ export class HomeComponent implements OnInit {
   }
 
   refresh() {
-    this.redmine$.next(this.redmineService.getApi());
+    try {
+      this.redmine$.next(this.redmineService.getApi());
+    } catch(e) {
+      console.log('Redmine not configured. Go to config page.', e);
+      this.router.navigate(['/config']);
+    }
   }
 
   makeIssueQuery(search: string): Query {
