@@ -5,7 +5,7 @@
           <span>Configure Redmine</span>
       </mat-toolbar>
   </div>
-  <form [formGroup]="credentials" action="none" novalidate>
+  <form [formGroup]="credentials" onsubmit="return false;" novalidate>
     <div flex>
         <mat-form-field>
           <input matInput placeholder="URL" formControlName="url">
