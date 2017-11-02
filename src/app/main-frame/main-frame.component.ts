@@ -9,6 +9,7 @@ import { WorktimeService } from '../worktime.service';
 export class MainFrameComponent implements OnInit {
 
   @Input() name: string;
+  @Input() home = false;
 
   constructor(public worktime: WorktimeService) { }
 

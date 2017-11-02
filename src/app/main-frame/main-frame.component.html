@@ -10,9 +10,10 @@
   <div layout="column">
     <div flex>
       <mat-toolbar color="primary">
-        <button mat-icon-button (click)="sidenav.toggle()">
+        <button mat-icon-button (click)="sidenav.toggle()" *ngIf="home">
             <mat-icon>menu</mat-icon>
         </button>
+        <a mat-icon-button routerLink="/" *ngIf="!home"><mat-icon>keyboard_backspace</mat-icon></a>
         <span>{{ name }}</span>
         <span class="fill-remaining-space"></span>
         <button matInput mat-icon-button main-frame-toolbar (click)="worktime.start()" *ngIf="!(worktime.isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
