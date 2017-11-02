@@ -1,5 +1,4 @@
 <app-main-frame [name]="title$ | async">
-    <app-duration main-frame-toolbar [duration$]="worktime.runningTime$" (change)="onDurationChange($event)"></app-duration>
     <div main-frame-body >
       <h1>{{ subject$ | async }}</h1>
       <markdown [data]="description$ | async"></markdown>

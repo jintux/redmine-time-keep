@@ -1,8 +1,4 @@
 <app-main-frame name="Redmine">
-  <button matInput mat-icon-button main-frame-toolbar (click)="worktime.start()" *ngIf="!(worktime.isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
-  <button matInput mat-icon-button main-frame-toolbar (click)="worktime.stop()" *ngIf="worktime.isRunning$ | async"><mat-icon>pause</mat-icon></button>
-  <app-duration main-frame-toolbar [duration$]="worktime.runningTime$" (change)="onDurationChange($event)"></app-duration>
-
   <div main-frame-body>
     <div [formGroup]="search">
         <mat-form-field class="full-width">

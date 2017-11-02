@@ -1,4 +1,3 @@
-import { WorktimeService } from './../worktime.service';
 import { Router } from '@angular/router';
 import { logObs } from './../log.service';
 import { FormControl, FormBuilder } from '@angular/forms';
@@ -57,7 +56,7 @@ export class HomeComponent implements OnInit {
   public error$ = this.issuesOrError$
     .map(v => !(v instanceof Array) ? v : '');
 
-  constructor(private redmineService: RedmineService, private fb: FormBuilder, private router: Router, public worktime: WorktimeService) {
+  constructor(private redmineService: RedmineService, private fb: FormBuilder, private router: Router) {
     this.refresh();
   }
 
@@ -90,13 +89,6 @@ export class HomeComponent implements OnInit {
     return ret;
   }
 
-  onDurationChange(newVal) {
-    if (newVal instanceof Event) {
-      return; // Somtimes it is of type Event??
-    }
-    this.worktime.setDuration(newVal);
-  }
-
   clearSearch() {
     this.search.setValue({search: ''});
   }
@@ -106,7 +98,6 @@ export class HomeComponent implements OnInit {
   }
 
   commit(issue: IssueHead) {
-    this.worktime.stop();
     this.router.navigate(['/commit', issue.id]);
   }
 }

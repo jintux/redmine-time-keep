@@ -9,14 +9,16 @@
   </mat-sidenav>
   <div layout="column">
     <div flex>
-        <mat-toolbar color="primary">
-          <button mat-icon-button (click)="sidenav.toggle()">
-              <mat-icon>menu</mat-icon>
-          </button>
-          <span>{{ name }}</span>
-          <span class="fill-remaining-space"></span>
-          <ng-content select="[main-frame-toolbar]"></ng-content>
-        </mat-toolbar>
+      <mat-toolbar color="primary">
+        <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span>{{ name }}</span>
+        <span class="fill-remaining-space"></span>
+        <button matInput mat-icon-button main-frame-toolbar (click)="worktime.start()" *ngIf="!(worktime.isRunning$ | async)"><mat-icon>play_arrow</mat-icon></button>
+        <button matInput mat-icon-button main-frame-toolbar (click)="worktime.stop()" *ngIf="worktime.isRunning$ | async"><mat-icon>pause</mat-icon></button>
+        <app-duration main-frame-toolbar [duration$]="worktime.runningTime$" (change)="onDurationChange($event)"></app-duration>
+      </mat-toolbar>
     </div>
     <ng-content select="[main-frame-body]"></ng-content>
   </div>
