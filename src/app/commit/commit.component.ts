@@ -1,5 +1,5 @@
 import { logObs } from './../log.service';
-import { RedmineService, RedmineApi, makeQuery } from './../redmine.service';
+import { RedmineService, RedmineApi, makeQuery, IdAndName } from './../redmine.service';
 import { WorktimeService } from './../worktime.service';
 import { Observable } from 'rxjs/Rx';
 import { Component } from '@angular/core';
@@ -27,15 +27,22 @@ export class CommitComponent {
   public workPerc$ = new Subject<number>();
   public commitDuration$ = this.worktime.runningTime$.withLatestFrom(this.workPerc$.startWith(1))
     .map(([dur, perc]) => Math.floor(dur * perc));
+  public activities: IdAndName[];
 
   public finalDuration = 0;
   
   commit = this.fb.group({
     comment: [''],
+    activity: ['']
   });
-    
+
   constructor(private fb: FormBuilder, private route: ActivatedRoute, public worktime: WorktimeService, redmineService: RedmineService) {
     this.redmine = redmineService.getApi();
+    this.redmine.getEnumeration('time_entry_activities')
+      .take(1).subscribe(v => {
+        this.activities = v;
+        v.forEach(a => a.is_default ? this.commit.patchValue({ activity: '' + a.id }) : 0);
+      });
   }
 
   onDurationChange(newVal) {
@@ -50,6 +57,11 @@ export class CommitComponent {
   }
 
   onCommit() {
-    console.log('Create time-entry here. Subtract duration. Go back.');
+    const commitForm = this.commit.value;
+    const activity = {
+      comment: commitForm.comment,
+      activity_id: parseInt(commitForm.activity, 10)
+    };
+    console.log('Create time-entry here. Subtract duration. Go back.', activity);
   }
 }

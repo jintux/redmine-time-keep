@@ -7,6 +7,7 @@ import { logObs } from './log.service';
 export interface IdAndName {
   id: number;
   name: string;
+  is_default?: boolean;
 }
 export interface Issue {
   id: number;
@@ -40,6 +41,7 @@ export interface RedmineApi {
   getIssues(params: IssueParams): Observable<Issue[]>;
 //  test(cmd: string, arg: any): Observable<string>;
 //  search(params: SearchParams): Observable<SearchResult[]>;
+  getEnumeration(enumeration: string): Observable<IdAndName[]>;
   run(query: Query): Observable<any>;
 }
 
@@ -48,6 +50,14 @@ export interface RedmineConfig {
   url: string;
   username: string;
   password: string;
+}
+
+export interface TimeEntry {
+  issue_id: number;    // or project_id (only one is required): the issue id or project id to log time on
+  spent_on?: Date;     // the date the time was spent (default to the current date)
+  hours: number;       // (required): the number of spent hours
+  activity_id: number; // the id of the time activity. This parameter is required unless a default activity is defined in Redmine.
+  comments: string;    // short description for the entry (255 characters max)
 }
 
 export const addFilter = (params: any, name: string, operation: string, value?: string) => {
@@ -142,6 +152,7 @@ export class RedmineService {
       getIssues: (params: IssueParams) => runQuery<any>(makeQuery('issues', params)).do(logObs('***getIssues')).map(v => v.issues),
 //      test: (cmd: string, arg: any) => runQuery<any>(cmd, arg).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),
 //      search: (params: SearchParams) => runQuery<any>('search', params).map(v => v.results)
+      getEnumeration: (enumeration: string) => runQuery<any>(makeQuery('enumerations/' + enumeration)).map(v => v[enumeration] as IdAndName[]), // Observable<IdAndName[]>,
       run: (query: Query) => runQuery<any>(query)
     };
   }

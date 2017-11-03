@@ -5,11 +5,18 @@
         <mat-card-title>Supply commit context here</mat-card-title>
         <form [formGroup]="commit" onsubmit="return false;">
           <mat-form-field>
-            <input matInput placeholder="Comment" formControlName="comment">
+            <input matInput autofocus placeholder="Comment" formControlName="comment">
           </mat-form-field>
           <br>
           <mat-slider min="0" max="1" step="0.01" value="1" (change)="onWorkPercChange($event)"></mat-slider>
           <app-duration main-frame-toolbar [duration$]="commitDuration$" (change)="onDurationChange($event)"></app-duration>
+          <mat-radio-group formControlName="activity">
+            <mat-radio-button *ngFor="let activity of activities" [value]="activity.id" [checked]="!!activity.is_default">
+              {{activity.name}}
+            </mat-radio-button>
+          </mat-radio-group>
+          <br>
+          <br>
           <button mat-button type="submit" (click)="onCommit()">
             <span style="vertical-align: center">
               <mat-icon style="color: green;">send</mat-icon>
