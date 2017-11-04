@@ -1,5 +1,5 @@
 import { logObs } from './../log.service';
-import { RedmineService, RedmineApi, makeQuery, IdAndName } from './../redmine.service';
+import { RedmineService, RedmineApi, makeQuery, IdAndName, Issue, TimeEntry } from './../redmine.service';
 import { WorktimeService } from './../worktime.service';
 import { Observable } from 'rxjs/Rx';
 import { Component } from '@angular/core';
@@ -15,14 +15,10 @@ import { Subject } from 'rxjs/Subject';
 export class CommitComponent {
 
   private redmine: RedmineApi;
-  public issue$ = this.route.paramMap
-    .map(v => parseInt(v.get('issue'), 10))
-    .switchMap(id => this.redmine.getIssues({ issue_id: id }))
-    .map(v => v[0])
-    .share();
-  public title$ = this.issue$.map(v => `${v.tracker.name} #${v.id}`);
-  public subject$ = this.issue$.map(v => v.subject);
-  public description$ = this.issue$.map(v => v.description).startWith('');
+  public issue: Issue;
+  public get title() { return this.issue ? `${this.issue.tracker.name} #${this.issue.id}` : ''; }
+  public get subject() { return this.issue ? this.issue.subject : ''; }
+  public get description() { return this.issue ? this.issue.description : ''; }
 
   public workPerc$ = new Subject<number>();
   public commitDuration$ = this.worktime.runningTime$.withLatestFrom(this.workPerc$.startWith(1))
@@ -43,6 +39,12 @@ export class CommitComponent {
         this.activities = v;
         v.forEach(a => a.is_default ? this.commit.patchValue({ activity: '' + a.id }) : 0);
       });
+    this.route.paramMap
+      .map(v => parseInt(v.get('issue'), 10))
+      .switchMap(id => this.redmine.getIssues({ issue_id: id }))
+      .map(v => v[0])
+      .take(1)
+      .subscribe(i => this.issue = i);
   }
 
   onDurationChange(newVal) {
@@ -57,11 +59,20 @@ export class CommitComponent {
   }
 
   onCommit() {
+    if (this.finalDuration <= 0) {
+      console.log('No time to register...');
+      return;
+    }
     const commitForm = this.commit.value;
-    const activity = {
-      comment: commitForm.comment,
-      activity_id: parseInt(commitForm.activity, 10)
+    const activity: TimeEntry = {
+      issue_id: this.issue.id,
+      hours: this.finalDuration / 3600,
+      activity_id: parseInt(commitForm.activity, 10),
+      comments: commitForm.comment as string
     };
     console.log('Create time-entry here. Subtract duration. Go back.', activity);
+    this.redmine.createTimeEntry(activity)
+      .take(1)
+      .subscribe(logObs('PostActivity'));
   }
 }

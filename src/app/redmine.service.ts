@@ -43,6 +43,8 @@ export interface RedmineApi {
 //  search(params: SearchParams): Observable<SearchResult[]>;
   getEnumeration(enumeration: string): Observable<IdAndName[]>;
   run(query: Query): Observable<any>;
+
+  createTimeEntry(timeEntry: TimeEntry): Observable<void>;
 }
 
 
@@ -116,21 +118,36 @@ const toRedmineQuery = (cmd: string, params?: any) => {
   return `${cmd}.json${str}`;
 };
 
-const makeQueryRunner = (http: HttpClient, cred: RedmineConfig) => <T>(query: Query): Observable<T> => {
+interface QueryRunner {
+  get: <T>(query: Query) => Observable<T>;
+  post: (query: Query) => Observable<any>;  
+}
+
+const makeQueryRunner = (http: HttpClient, cred: RedmineConfig): QueryRunner => {
   const auth = 'Basic ' + btoa(cred.username + ':' + cred.password);
   const headers = new HttpHeaders()
     .set('Content-Type', 'application/json')
     .set('authorization', auth);
-  const queryUrl = toRedmineQuery(query.cmd, query.params);
-  console.log('Running query', queryUrl, query);
-  return http.get<T>(cred.url + '/' + queryUrl, { headers })
-    .do(logObs('Query ' + queryUrl));
+  return {
+    get: <T>(query: Query): Observable<T> => {
+      const queryUrl = toRedmineQuery(query.cmd, query.params);
+      console.log('Running get query', queryUrl, query);
+      return http.get<T>(cred.url + '/' + queryUrl, { headers })
+        .do(logObs('Query ' + queryUrl));
+    },
+    post: (query: Query): Observable<any> => {
+      const queryUrl = toRedmineQuery(query.cmd);
+      console.log('Running post query', queryUrl, query);
+      return http.post(cred.url + '/' + queryUrl, query.params, { headers })
+        .do(logObs('Query ' + queryUrl));
+    }
+  };
 };
 
 @Injectable()
 export class RedmineService {
 
-  runQuery: <T>(query: Query) => Observable<T>;
+  runQuery: QueryRunner;
 
   constructor(private http: HttpClient) {
     const cred = localStorage.getItem('credentials');
@@ -149,11 +166,13 @@ export class RedmineService {
       throw new Error('Redmine not configured');
     }
     return {
-      getIssues: (params: IssueParams) => runQuery<any>(makeQuery('issues', params)).do(logObs('***getIssues')).map(v => v.issues),
+      getIssues: (params: IssueParams) => runQuery.get<any>(makeQuery('issues', params)).do(logObs('***getIssues')).map(v => v.issues),
 //      test: (cmd: string, arg: any) => runQuery<any>(cmd, arg).map(v => JSON.stringify(v)).catch(e => Observable.of(JSON.stringify(e))),
 //      search: (params: SearchParams) => runQuery<any>('search', params).map(v => v.results)
-      getEnumeration: (enumeration: string) => runQuery<any>(makeQuery('enumerations/' + enumeration)).map(v => v[enumeration] as IdAndName[]), // Observable<IdAndName[]>,
-      run: (query: Query) => runQuery<any>(query)
+      getEnumeration: (enumeration: string) => runQuery.get<any>(makeQuery('enumerations/' + enumeration))
+                        .map(v => v[enumeration] as IdAndName[]), // Observable<IdAndName[]>,
+      run: (query: Query) => runQuery.get<any>(query),
+      createTimeEntry: (timeEntry: TimeEntry) => runQuery.post(makeQuery('time_entries', { 'time_entry': timeEntry }))
     };
   }
 }

@@ -1,6 +1,6 @@
-<app-main-frame [name]="title$ | async">
+<app-main-frame [name]="title">
     <div main-frame-body >
-      <h1>{{ subject$ | async }}</h1>
+      <h1>{{ subject }}</h1>
       <mat-card>
         <mat-card-title>Supply commit context here</mat-card-title>
         <form [formGroup]="commit" onsubmit="return false;">
@@ -25,6 +25,6 @@
           </button>
         </form>
       </mat-card>
-      <markdown [data]="description$ | async"></markdown>
+      <markdown [data]="description"></markdown>
     </div>
 </app-main-frame>
