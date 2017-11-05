@@ -20,6 +20,7 @@ export class WorktimeService implements OnDestroy {
 
   private startCmd$ = new Subject();
   private stopCmd$ = new Subject();
+  private subtractTime$ = new Subject<number>();
   private action$ = Observable.merge(
     this.startCmd$.mapTo((timerState: TimerState) => ({ ...timerState,
         lastStartTime: (new Date()).getTime(),
@@ -29,7 +30,9 @@ export class WorktimeService implements OnDestroy {
         ? { ...timerState,
             duration: timerState.duration + toDuration(timerState.lastStartTime),
             running: false }
-        : { ...timerState } ));
+        : { ...timerState } ),
+    this.subtractTime$.map(d => (timerState: TimerState) => ({ ...timerState,
+        duration: Math.max(timerState.duration - d, 0) })));
 
   public timerState$ = this.action$
     .scan((timerState, timerAction) => timerAction(timerState), this.currState)
@@ -63,5 +66,10 @@ export class WorktimeService implements OnDestroy {
 
   setDuration(newVal: number) {
     this.currState.duration = newVal * 1000;
+  }
+
+  subtract(duration: number) {
+    this.stop();
+    this.subtractTime$.next(duration * 1000);
   }
 }

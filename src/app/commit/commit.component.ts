@@ -3,7 +3,7 @@ import { RedmineService, RedmineApi, makeQuery, IdAndName, Issue, TimeEntry } fr
 import { WorktimeService } from './../worktime.service';
 import { Observable } from 'rxjs/Rx';
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
 
@@ -32,7 +32,12 @@ export class CommitComponent {
     activity: ['']
   });
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, public worktime: WorktimeService, redmineService: RedmineService) {
+  constructor(
+      private fb: FormBuilder,
+      private route: ActivatedRoute,
+      private router: Router,
+      public worktime: WorktimeService,
+      redmineService: RedmineService) {
     this.redmine = redmineService.getApi();
     this.redmine.getEnumeration('time_entry_activities')
       .take(1).subscribe(v => {
@@ -45,6 +50,7 @@ export class CommitComponent {
       .map(v => v[0])
       .take(1)
       .subscribe(i => this.issue = i);
+    this.commitDuration$.take(1).subscribe(v => this.onDurationChange(v));
   }
 
   onDurationChange(newVal) {
@@ -64,15 +70,19 @@ export class CommitComponent {
       return;
     }
     const commitForm = this.commit.value;
+    const finalDuration = this.finalDuration; // To capture it later
     const activity: TimeEntry = {
       issue_id: this.issue.id,
-      hours: this.finalDuration / 3600,
+      hours: finalDuration / 3600,
       activity_id: parseInt(commitForm.activity, 10),
       comments: commitForm.comment as string
     };
-    console.log('Create time-entry here. Subtract duration. Go back.', activity);
+    console.log('Creating time-entry', activity);
     this.redmine.createTimeEntry(activity)
       .take(1)
-      .subscribe(logObs('PostActivity'));
+      .subscribe(_ => {
+        this.worktime.subtract(finalDuration);
+        this.router.navigate(['/']);
+      });
   }
 }
