@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@angular/language-service"
+    versions:
+    - 11.2.10
+    - 11.2.11
+  - dependency-name: core-js
+    versions:
+    - 3.10.2
+    - 3.11.0
+  - dependency-name: "@types/jasmine"
+    versions:
+    - 3.6.9
